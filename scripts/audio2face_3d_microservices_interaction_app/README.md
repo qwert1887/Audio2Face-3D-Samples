@@ -46,13 +46,13 @@ pip3 install -r requirements.txt
 ### Check that the service is up and running
 
 ```bash
-./a2f_3d.py health_check --url <ip>:<port>
+python3 a2f_3d.py health_check --url <ip>:<port>
 ```
 
 ### Running inference requests with the a2f_3d.py script
 
 ```bash
-./a2f_3d.py run_inference <audio_file.wav> <config.yml> -u <ip>:<port> [--skip-print-to-files]
+python3 a2f_3d.py run_inference <audio_file.wav> <config.yml> -u <ip>:<port> [--skip-print-to-files]
 ```
 
 The scripts takes three mandatory parameters:
@@ -92,10 +92,10 @@ susceptible to changes.
 
 ### Running the nim_performance_test.py script
 
-Usage (`./nim_performance_test.py --help`)
+Usage (`python3 nim_performance_test.py --help`)
 
 ```bash
-./nim_performance_test.py --request-nb <REQUEST_NB> --max-stream-nb <MAX_STREAM_NB> --url <ip>:<port>
+python3 nim_performance_test.py --request-nb <REQUEST_NB> --max-stream-nb <MAX_STREAM_NB> --url <ip>:<port>
 ```
 
 The scripts takes three mandatory parameters:

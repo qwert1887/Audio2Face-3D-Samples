@@ -34,6 +34,61 @@ STYLE_MARK_CFG = "mark_stylization_config.yaml"
 DEPLOY_CFG = "deployment_config.yaml"
 ADVANCED_CFG = "advanced_config.yaml"
 
+LIST_FACE_PARAM_ORDER = [
+   "EyeBlinkLeft",
+   "EyeLookDownLeft",
+   "EyeLookInLeft",
+   "EyeLookOutLeft",
+   "EyeLookUpLeft",
+   "EyeSquintLeft",
+   "EyeWideLeft",
+   "EyeBlinkRight",
+   "EyeLookDownRight",
+   "EyeLookInRight",
+   "EyeLookOutRight",
+   "EyeLookUpRight",
+   "EyeSquintRight",
+   "EyeWideRight",
+   "JawForward",
+   "JawLeft",
+   "JawRight",
+   "JawOpen",
+   "MouthClose",
+   "MouthFunnel",
+   "MouthPucker",
+   "MouthLeft",
+   "MouthRight",
+   "MouthSmileLeft",
+   "MouthSmileRight",
+   "MouthFrownLeft",
+   "MouthFrownRight",
+   "MouthDimpleLeft",
+   "MouthDimpleRight",
+   "MouthStretchLeft",
+   "MouthStretchRight",
+   "MouthRollLower",
+   "MouthRollUpper",
+   "MouthShrugLower",
+   "MouthShrugUpper",
+   "MouthPressLeft",
+   "MouthPressRight",
+   "MouthLowerDownLeft",
+   "MouthLowerDownRight",
+   "MouthUpperUpLeft",
+   "MouthUpperUpRight",
+   "BrowDownLeft",
+   "BrowDownRight",
+   "BrowInnerUp",
+   "BrowOuterUpLeft",
+   "BrowOuterUpRight",
+   "CheekPuff",
+   "CheekSquintLeft",
+   "CheekSquintRight",
+   "NoseSneerLeft",
+   "NoseSneerRight",
+   "TongueOut",
+]
+
 
 def compute_output_directory_name():
     index = 1
@@ -161,12 +216,12 @@ def convert_ucs_config(output_folder):
             # missing key; this is allowed; nothing to do
             pass
 
-    map_style["a2e"]["emotion_contrast"] = float(my_ucs.a2eEmotionContrast)
-    map_style["a2e"]["live_blend_coef"] = float(my_ucs.a2eLiveBlendCoef)
-    map_style["a2e"]["enable_preferred_emotion"] = my_ucs.a2eEnablePreferredEmotion.lower() == "true"
-    map_style["a2e"]["preferred_emotion_strength"] = float(my_ucs.a2ePreferredEmotionStrength)
-    map_style["a2e"]["emotion_strength"] = float(my_ucs.a2eEmotionStrength)
-    map_style["a2e"]["max_emotions"] = int(my_ucs.a2eMaxEmotions)
+    map_style["a2e"]["post_processing_params"]["emotion_contrast"] = float(my_ucs.a2eEmotionContrast)
+    map_style["a2e"]["post_processing_params"]["live_blend_coef"] = float(my_ucs.a2eLiveBlendCoef)
+    map_style["a2e"]["post_processing_params"]["enable_preferred_emotion"] = my_ucs.a2eEnablePreferredEmotion.lower() == "true"
+    map_style["a2e"]["post_processing_params"]["preferred_emotion_strength"] = float(my_ucs.a2ePreferredEmotionStrength)
+    map_style["a2e"]["post_processing_params"]["emotion_strength"] = float(my_ucs.a2eEmotionStrength)
+    map_style["a2e"]["post_processing_params"]["max_emotions"] = int(my_ucs.a2eMaxEmotions)
 
     map_advanced["a2e"]["inference_interval"] = int(my_ucs.a2eInferenceInterval)
     map_advanced["a2e"]["device_id"] = int(my_ucs.a2fDeviceId)
@@ -225,7 +280,8 @@ def convert_docker_config(output_folder):
         "enable_preferred_emotion"] = my_a2f.A2E.emotions.enable_preferred_emotion
     map_style["a2e"]["post_processing_params"]["emotion_strength"] = my_a2f.A2E.emotions.emotion_strength
     map_style["a2e"]["post_processing_params"]["max_emotions"] = my_a2f.A2E.emotions.max_emotions
-    map_style["a2f"]["face_params"]["weight_multipliers"] = my_a2f.A2F.api.bs_weight_multipliers
+    map_style["a2f"]["blendshape_params"]["weight_multipliers"] = dict(zip(
+        LIST_FACE_PARAM_ORDER, my_a2f.A2F.api.bs_weight_multipliers))
 
     controller_internal_client_url = f"{my_controller.audio2face.send_audio.ip}:{my_controller.audio2face.send_audio.port}"
     controller_internal_server_url = f"0.0.0.0:{my_controller.audio2face.receive_anim_data.port}"

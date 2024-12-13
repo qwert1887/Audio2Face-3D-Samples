@@ -29,6 +29,7 @@ default_beginning_emotions:
 
 a2e:
   enabled: true
+  live_transition_time: 0.5
   post_processing_params:
     emotion_contrast: 1.0 # Increases the spread between emotion values by pushing them higher or lower
     emotion_strength: 0.6 # Sets the strength of generated emotions relative to neutral emotion
@@ -54,62 +55,64 @@ a2f:
     upper_face_smoothing: 0.001 # Applies temporal smoothing to the upper face motion
     upper_face_strength: 1.0 # Controls the range of motion on the upper regions of the face
 
-  blendshape_params:
-    weight_multipliers:  # Modulates the effect of each blendshapes. blendshape_values * weight_multipliers + weight_offsets
+  blendshape_params: # Modulates the effect of each blendshapes. Gain * w + offset
+    enable_clamping_bs_weight: false
+    
+    weight_multipliers:
       EyeBlinkLeft: 1.0
-      EyeLookDownLeft: 0.0
-      EyeLookInLeft: 0.0
-      EyeLookOutLeft: 0.0
-      EyeLookUpLeft: 0.0
+      EyeLookDownLeft: 1.0
+      EyeLookInLeft: 1.0
+      EyeLookOutLeft: 1.0
+      EyeLookUpLeft: 1.0
       EyeSquintLeft: 1.0
       EyeWideLeft: 1.0
       EyeBlinkRight: 1.0
-      EyeLookDownRight: 0.0
-      EyeLookInRight: 0.0
-      EyeLookOutRight: 0.0
-      EyeLookUpRight: 0.0
+      EyeLookDownRight: 1.0
+      EyeLookInRight: 1.0
+      EyeLookOutRight: 1.0
+      EyeLookUpRight: 1.0
       EyeSquintRight: 1.0
       EyeWideRight: 1.0
-      JawForward: 0.7
-      JawLeft: 0.2
-      JawRight: 0.2
+      JawForward: 1.0
+      JawLeft: 1.0
+      JawRight: 1.0
       JawOpen: 1.0
       MouthClose: 1.0
-      MouthFunnel: 1.2
-      MouthPucker: 1.2
-      MouthLeft: 0.2
-      MouthRight: 0.2
-      MouthSmileLeft: 0.8
-      MouthSmileRight: 0.8
-      MouthFrownLeft: 0.4
-      MouthFrownRight: 0.4
-      MouthDimpleLeft: 0.7
-      MouthDimpleRight: 0.7
-      MouthStretchLeft: 0.1
-      MouthStretchRight: 0.1
-      MouthRollLower: 0.9
-      MouthRollUpper: 0.5
-      MouthShrugLower: 0.9
-      MouthShrugUpper: 0.4
-      MouthPressLeft: 0.8
-      MouthPressRight: 0.8
-      MouthLowerDownLeft: 0.8
-      MouthLowerDownRight: 0.8
-      MouthUpperUpLeft: 0.8
-      MouthUpperUpRight: 0.8
+      MouthFunnel: 1.0
+      MouthPucker: 1.0
+      MouthLeft: 1.0
+      MouthRight: 1.0
+      MouthSmileLeft: 1.0
+      MouthSmileRight: 1.0
+      MouthFrownLeft: 1.0
+      MouthFrownRight: 1.0
+      MouthDimpleLeft: 1.0
+      MouthDimpleRight: 1.0
+      MouthStretchLeft: 1.0
+      MouthStretchRight: 1.0
+      MouthRollLower: 1.0
+      MouthRollUpper: 1.0
+      MouthShrugLower: 1.0
+      MouthShrugUpper: 1.0
+      MouthPressLeft: 1.0
+      MouthPressRight: 1.0
+      MouthLowerDownLeft: 1.0
+      MouthLowerDownRight: 1.0
+      MouthUpperUpLeft: 1.0
+      MouthUpperUpRight: 1.0
       BrowDownLeft: 1.0
       BrowDownRight: 1.0
       BrowInnerUp: 1.0
       BrowOuterUpLeft: 1.0
       BrowOuterUpRight: 1.0
-      CheekPuff: 0.2
+      CheekPuff: 1.0
       CheekSquintLeft: 1.0
       CheekSquintRight: 1.0
-      NoseSneerLeft: 0.8
-      NoseSneerRight: 0.8
-      TongueOut: 0.0
+      NoseSneerLeft: 1.0
+      NoseSneerRight: 1.0
+      TongueOut: 1.0
 
-    weight_offsets:  # Modulates the effect of each blendshapes. blendshape_values * weight_multipliers + weight_offsets
+    weight_offsets:
       EyeBlinkLeft: 0.0
       EyeLookDownLeft: 0.0
       EyeLookInLeft: 0.0
@@ -163,7 +166,7 @@ a2f:
       NoseSneerRight: 0.0
       TongueOut: 0.0
 
-    active_poses: # Define which poses are active and which one are not
+    active_poses:
       EyeBlinkLeft: 1
       EyeLookDownLeft: 0
       EyeLookInLeft: 0
@@ -217,7 +220,7 @@ a2f:
       NoseSneerRight: 1
       TongueOut: 0
 
-    cancel_poses: # Define which poses cancel each other
+    cancel_poses:
       EyeBlinkLeft: -1
       EyeLookDownLeft: -1
       EyeLookInLeft: -1
@@ -271,7 +274,7 @@ a2f:
       NoseSneerRight: -1
       TongueOut: -1
 
-    symmetry_poses: # Define which poses are symmetric to each other
+    symmetry_poses:
       EyeBlinkLeft: 0
       EyeLookDownLeft: -1
       EyeLookInLeft: -1

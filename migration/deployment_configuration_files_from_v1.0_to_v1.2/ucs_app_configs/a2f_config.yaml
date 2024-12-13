@@ -19,7 +19,7 @@ streamNumber: "10"
 a2eEnabled: "True"
 #> type: string
 #> description:  whether A2E is enabled
-a2eInferenceInterval: "5"
+a2eInferenceInterval: "10"
 #> type: string
 #> description: perform 1 inference per group of N frames
 faceParams: "{}"
@@ -34,7 +34,7 @@ a2fDeviceId: "0"
 a2eEmotionContrast: "1.0"
 #> type: string
 #> description: Emotion contrast applied as sigmoid function to inferred A2E vector
-a2eLiveBlendCoef: "0.6"
+a2eLiveBlendCoef: "0.7"
 #> type: string
 #> description: Used in smoothing the emotion vector output to reduce noise or sudden fluctuations
 a2eEnablePreferredEmotion: "True"
@@ -57,16 +57,16 @@ addSilencePaddingAfterAudio: "False"
 queueAfterStreammux: "1"
 #> type: string
 #> description: queue size after the muxer element
-queueAfterA2F: "3000"
+queueAfterA2F: "300"
 #> type: string
 #> description: queue size after the a2f plugin
-queueAfterA2E: "30"
+queueAfterA2E: "1"
 #> type: string
 #> description: queue size after the a2e plugin
-maxLenUUID: "100"
+maxLenUUID: "50"
 #> type: string 
 #> description: maximum sample rate accepted by a2f
-maxSampleRate: "140000"
+maxSampleRate: "144000"
 #> type: string 
 #> description: minimum sample rate accepted by a2f
 minSampleRate: "16000"
