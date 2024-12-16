@@ -22,7 +22,9 @@ import os
 from a2f_data_classes.a2f_config import A2FConfig
 from a2f_data_classes.a2f_controller_config import A2FControllerConfig
 from a2f_data_classes.ucs_app_config import UCSConfig
-import yaml
+from ruamel.yaml import YAML
+# Initialize YAML object
+yaml = YAML()
 from dataclasses import fields, is_dataclass
 
 CHOICE_CONVERT = ["ucs", "docker_config"]
@@ -131,20 +133,20 @@ def load_class(file_path, classtype):
         yaml_text = file.read()
 
     yaml_text = yaml_text.replace("-", "_")
-    yaml_data = yaml.safe_load(yaml_text)
+    yaml_data = yaml.load(yaml_text)
     config = load_yaml_to_dataclass(yaml_data, classtype)
     return config
 
 
 def load_yaml_file(file_path):
     with open(file_path, "r") as file:
-        data = yaml.safe_load(file)
+        data = yaml.load(file)
     return data
 
 
 def save_yaml_file(data, file_path):
     with open(file_path, "w") as file:
-        yaml.safe_dump(data, file)
+        yaml.dump(data, file)
 
 
 def get_config_style_from_name_model(name):
