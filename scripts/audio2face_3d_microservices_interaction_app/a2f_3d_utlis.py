@@ -18,6 +18,7 @@
 import argparse
 import asyncio
 import json
+import sys
 from sys import stderr
 import os
 import time
@@ -366,48 +367,61 @@ def create_parser():
     return parser
 
 
-async def main():
-    args = create_parser().parse_args()
+async def main(file, config, url):
     # Suppress WavFileWarning warnings
     warnings.filterwarnings("ignore", category=scipy.io.wavfile.WavFileWarning)
 
-    if args.command == "health_check":
-        # Checks the health of the service at the specified URL.
-        # Prints "ONLINE" if the service is available, "OFFLINE" otherwise.
-        print(f'Service {args.url} is {"ONLINE" if (check_health(grpc.insecure_channel(args.url))) else "OFFLINE"}')
+    # if args.command == "health_check":
+    #     # Checks the health of the service at the specified URL.
+    #     # Prints "ONLINE" if the service is available, "OFFLINE" otherwise.
+    #     print(f'Service {args.url} is {"ONLINE" if (check_health(grpc.insecure_channel(args.url))) else "OFFLINE"}')
 
-    elif args.command == "run_inference":
-        # Creating an insecure channel to connect to the A2F-3D NIM.
-        # If behind HTTPS proxy or using HTTPS, please refer to
-        # https://grpc.github.io/grpc/python/grpc_asyncio.html#grpc.aio.secure_channel
-        async with grpc.aio.insecure_channel(args.url) as c:
-            # Creating a stub for the service. This allows us to use the remote channel to communicate
-            # via RPC to the controller.
-            stub = A2FControllerServiceStub(c)
-            filename = os.path.basename(args.file).rsplit(".", 1)[0]
-            # ProcessAudioStream is a bidirectionnal stream, or StreamStreamCall object
-            # It exposes a read and write interface as shown here:
-            # https://grpc.github.io/grpc/python/grpc_asyncio.html#grpc.aio.StreamStreamCall
-            stream = stub.ProcessAudioStream()
-            # We create an asyncio task for reading the content of the string, into a async function
-            # called read_from_stream.
-            read = asyncio.create_task(read_from_stream(stream, not args.skip_print_to_files, args.print_fps, filename))
+    # Creating an insecure channel to connect to the A2F-3D NIM.
+    # If behind HTTPS proxy or using HTTPS, please refer to
+    # https://grpc.github.io/grpc/python/grpc_asyncio.html#grpc.aio.secure_channel
+    async with grpc.aio.insecure_channel(url) as c:
+        # Creating a stub for the service. This allows us to use the remote channel to communicate
+        # via RPC to the controller.
+        stub = A2FControllerServiceStub(c)
+        filename = os.path.basename(file).rsplit(".", 1)[0]
+        # ProcessAudioStream is a bidirectionnal stream, or StreamStreamCall object
+        # It exposes a read and write interface as shown here:
+        # https://grpc.github.io/grpc/python/grpc_asyncio.html#grpc.aio.StreamStreamCall
+        stream = stub.ProcessAudioStream()
+        # We create an asyncio task for reading the content of the string, into a async function
+        # called read_from_stream.
+        skip_print_to_files = False
+        print_fps = False
+        read = asyncio.create_task(read_from_stream(stream, not skip_print_to_files, print_fps, filename))
 
-            try:
-                # We create another asyncio task for writing into the stream. This allows us to run them
-                # both in parrallel instead of sequentially.
-                write = asyncio.create_task(write_to_stream(stream, args.config, args.file, args.print_fps))
-                # Await task termination.
-                await write
-            except ValueError as e:
-                print(f"Error: {e}")
-                exit(1)
-            except Exception as e:
-                print(f"Unexpected error: {e}")
-                exit(1)
-
+        try:
+            # We create another asyncio task for writing into the stream. This allows us to run them
+            # both in parrallel instead of sequentially.
+            write = asyncio.create_task(write_to_stream(stream, config, file, print_fps))
             # Await task termination.
-            await read
+            await write
+        except ValueError as e:
+            print(f"Error: {e}")
+            exit(1)
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            exit(1)
+
+        # Await task termination.
+        await read
+
+def mian_wrapper(*args):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(main(*args))
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    audio_path = "../../example_audio/test.wav"
+    config_path = "config/config_james.yml"
+    url = "127.0.0.1:52000"  #  0.0.0.0:52000
+    # asyncio.run(main(audio_path, config_path, url))
+    import threading
+    # loop = asyncio.new_event_loop()
+    # loop = None
+    threading.Thread(target=mian_wrapper, args=(audio_path, config_path, url)).start()

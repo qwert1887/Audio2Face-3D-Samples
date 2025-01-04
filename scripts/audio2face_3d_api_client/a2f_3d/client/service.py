@@ -53,7 +53,7 @@ def save_audio_data_to_file(outdir: str, audio_header: AudioHeader, audio_buffer
         print("Error while downloading data, unknown format for audio output", file=stderr)
         return
 
-    audio_data_to_save = numpy.frombuffer(audio_buffer, dtype=dtype) 
+    audio_data_to_save = numpy.frombuffer(audio_buffer, dtype=dtype)
     # Write the audio data output as a wav file.
     scipy.io.wavfile.write(f"{outdir}/out.wav", audio_header.samples_per_second, audio_data_to_save)
 
