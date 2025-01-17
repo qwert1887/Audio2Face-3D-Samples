@@ -3,11 +3,11 @@
 # @Time : 2025/1/4 11:20
 import json
 import os
-from collections import OrderedDict
 
 
-def convert_bs_demo(work_dir):
-    json_path = os.path.join(work_dir, 'blendshape.json')
+def convert_bs_demo(json_path, save=False):
+    # json_path = os.path.join(work_dir, 'blendshape.json')
+    # json_path = json_path
     bs_list = []
     with open(json_path, "r") as f:
         data_list = json.load(f)
@@ -19,10 +19,15 @@ def convert_bs_demo(work_dir):
                 k = k.replace(k[0], k[0].lower())
                 bs_list_new[k] = round(v, 3)  # 保留3位小数
             bs_list_new["endTime"] = idx + 2  # endTime start_idx 2
-            print(idx, timestamp, bs_list_new)
+            # print(idx, timestamp, bs_list_new)
             bs_list.append(bs_list_new)
-    json.dump(bs_list, open(os.path.join(work_dir, "bs.json"), "w"), indent=4, ensure_ascii=False)
+    if save:
+        save_dir = "converted_bs"
+        save_name = os.path.basename(json_path)
+        json.dump(bs_list, open(os.path.join(save_dir, save_name), "w"), indent=4, ensure_ascii=False)
     # json.dump(bs_list, open(os.path.join(work_dir, "bs.json"), "w"), ensure_ascii=False)
+    if os.path.isfile(json_path) and not save:
+        os.remove(json_path)
     return bs_list, timestamp
 
 def test_convert_bs_demo():
@@ -72,5 +77,44 @@ def test_normalize_bs():
         print(v)
 
 
+def convert_bs_batch(work_dir):
+    # work_dir = "/home/guaishou/Downloads/QA_2"
+    files_list = os.listdir(work_dir)
+    # files_list = ["893f4bf8-297d-4c99-ac64-55a074ce8932.wav"]
+    for file in files_list:
+        if file.endswith(".wav"):
+            file = file.replace(".wav", ".json")
+            # json_path = os.path.join(work_dir, file)
+            json_path = f"output_bs/{file}"
+            convert_bs_demo(json_path, save=True)
+
+def update_qa_bs(work_dir):
+    # work_dir = "/home/guaishou/Downloads/QA_2"
+    files_list = os.listdir(work_dir)
+    for file in files_list:
+        if file.endswith(".json"):
+            file = os.path.join(work_dir, file)
+            print(file)
+            data_dict = json.load(open(file, "r"))
+            # print(data_dict)
+            for child in data_dict["child"]:
+                audio_name = child.get("objectName")
+                if audio_name:
+                    bs_json_file = os.path.basename(audio_name) + ".json"
+                    print(bs_json_file)
+                    json_path = f"converted_bs/{bs_json_file}"
+                    child["bsList"] = json.load(open(json_path, "r"))
+                    print(child["text"])
+            json.dump(data_dict, open(file, "w"), indent=4, ensure_ascii=False)
+            # break
+
+
 if __name__ == '__main__':
-    test_normalize_bs()
+    work_dir_path = "/home/guaishou/Downloads/QA_2"
+    # test_normalize_bs()
+    # for n in range(1, 7):
+    #     json_path = f"output_bs/parkingLot{n}.json"
+    #     convert_bs_demo(json_path, save=True)
+
+    # convert_bs_batch(work_dir_path)
+    update_qa_bs(work_dir=work_dir_path)

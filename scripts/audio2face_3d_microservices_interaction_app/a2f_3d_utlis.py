@@ -402,10 +402,10 @@ async def main(file, config, url):
             await write
         except ValueError as e:
             print(f"Error: {e}")
-            exit(1)
+            # exit(1)
         except Exception as e:
             print(f"Unexpected error: {e}")
-            exit(1)
+            # exit(1)
 
         # Await task termination.
         await read
@@ -424,4 +424,13 @@ if __name__ == "__main__":
     import threading
     # loop = asyncio.new_event_loop()
     # loop = None
-    threading.Thread(target=mian_wrapper, args=(audio_path, config_path, url)).start()
+    # threading.Thread(target=mian_wrapper, args=(audio_path, config_path, url)).start()
+    work_dir = "/home/guaishou/Downloads/QA_2"
+    files_list = os.listdir(work_dir)
+    # files_list = ["893f4bf8-297d-4c99-ac64-55a074ce8932.wav"]
+    for file in files_list:
+        if file.endswith(".wav"):
+            audio_path = os.path.join(work_dir, file)
+            thread = threading.Thread(target=mian_wrapper, args=(audio_path, config_path, url))
+            thread.start()
+            thread.join()
