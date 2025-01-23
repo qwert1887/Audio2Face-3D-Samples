@@ -2,11 +2,15 @@
 # @Author : Dony YUAN
 # @Time : 2025/1/4 12:20
 import os.path
+import sys
+
+sys.path.insert(0, "../../")
+print(sys.path)
 from typing import Union, Optional
 import threading
 import uvicorn
 from fastapi import FastAPI, Form, File, UploadFile, Body, Request
-import requests
+# import requests
 from timeit import default_timer as timer
 import httpx
 from pydantic import BaseModel
