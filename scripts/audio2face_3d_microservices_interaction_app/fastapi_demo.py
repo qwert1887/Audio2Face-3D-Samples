@@ -104,6 +104,8 @@ async def audio_bs(
         filename = os.path.basename(audio_url)  # 注意后缀 以及samples 16KHz
         # strip_name, name_fmt = filename.split(".")
         strip_name, name_fmt = filename, "wav"
+        if ".wav" in filename:
+            strip_name = strip_name.replace(".wav", "")
         # if name_fmt != fmt:
         #     filename += f".{fmt}"
         # filebytes = await file.read()
@@ -133,6 +135,8 @@ async def audio_bs(
             {"code": 0, "msg":"success", "data": bs_data}
         )
     except Exception as e:
+        # import traceback
+        # traceback.print_exc()
         return JSONResponse(
             {"code": -1, "msg": "error", "data": e}
         )
@@ -187,4 +191,4 @@ async def uploadfile(
 
 if __name__ == '__main__':
     # 运行fastapi程序
-    uvicorn.run(app="fastapi_demo:app", host="0.0.0.0", port=8008, reload=True)
+    uvicorn.run(app="fastapi_demo:app", host="0.0.0.0", port=8008, reload=False)
